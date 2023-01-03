@@ -11,6 +11,7 @@ export default function Homepage({ title, children }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className='flex min-h-screen flex-col justify-between'>
+        {/* HEADER */}
         <header>
             <nav className='flex h-12 items-center px-4 justify-between shadow-md'>
                 <Link href="/">
@@ -26,7 +27,9 @@ export default function Homepage({ title, children }) {
                 </div>
             </nav>
         </header>
+        {/* MAIN SECTION */}
         <main className='container m-auto mt-4 px-4'>{children}</main>
+        {/* FOOTER */}
         <footer className='flex h-10 justify-center items-center shadow-inner'>
             <p>Copyright &copy; {new Date().getFullYear()} E-clothing </p>
         </footer> 
