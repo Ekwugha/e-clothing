@@ -5,8 +5,9 @@ import React, { useContext } from 'react';
 import Homepage from '../components/Homepage';
 import { Store } from '../utils/Store';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 
-export default function CartScreen() {
+function CartScreen() {
   // access the context and get cart from it
   const { state, dispatch } = useContext(Store);
   const router = useRouter();
@@ -115,3 +116,5 @@ export default function CartScreen() {
     </Homepage>
   );
 }
+
+export default dynamic(() => Promise.resolve(CartScreen), {ssr:false})

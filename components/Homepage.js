@@ -1,12 +1,19 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Store } from '../utils/Store';
 
 export default function Homepage({ title, children }) {
   // we use this to be able to see how many items been added to cart in the ui
   const { state } = useContext(Store);
   const { cart } = state;
+  const [cartItemsCount, setCartItemsCount] = useState(0);
+  useEffect(() => {
+    setCartItemsCount(cart.cartItems.reduce(
+      (a, currentItem) => a + currentItem.quantity,
+      0
+    ))
+  }, [cart.cartItems]);
   return (
     <>
       <Head>
@@ -25,12 +32,9 @@ export default function Homepage({ title, children }) {
               <Link href="/cart" legacyBehavior>
                 <a className="p-2">
                   Cart
-                  {cart.cartItems.length > 0 && (
+                  {cartItemsCount > 0 && (
                     <span className="ml-1 rounded-full bg-red-600 px-2 py-1 text-xs font-bold text-white">
-                      {cart.cartItems.reduce(
-                        (a, currentItem) => a + currentItem.quantity,
-                        0
-                      )}
+                      {cartItemsCount}
                     </span>
                   )}
                 </a>
