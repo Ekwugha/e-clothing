@@ -22,8 +22,8 @@ function CartScreen() {
 
   const updateCartHandler = (item, qty) => {
     const quantity = Number(qty);
-    dispatch({ type: 'CART_ADD_ITEM', payload: {...item, quantity}});
-  }
+    dispatch({ type: 'CART_ADD_ITEM', payload: { ...item, quantity } });
+  };
 
   return (
     <Homepage title="Shopping Cart">
@@ -66,7 +66,7 @@ function CartScreen() {
                         </Link>
                       </td>
                       <td className="p-5 text-right">
-                      {/* change quantity of each item in the cart */}
+                        {/* change quantity of each item in the cart */}
                         <select
                           value={item.quantity}
                           onChange={(e) =>
@@ -102,8 +102,9 @@ function CartScreen() {
                 </div>
               </li>
               <li>
+                {/* first we check if the user is logged in, we direct user to shipping screen, else we keep it in the login screen to fill the form */}
                 <button
-                  onClick={() => router.push('/shipping')}
+                  onClick={() => router.push('login?redirect=/shipping')}
                   className="primary-button w-full"
                 >
                   Check Out
@@ -117,4 +118,4 @@ function CartScreen() {
   );
 }
 
-export default dynamic(() => Promise.resolve(CartScreen), {ssr:false})
+export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });
