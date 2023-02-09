@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 export const Store = createContext();
 
-// use Cookies.get to get value from cookie to set the cart  
+// use Cookies.get to get value from cookie to set the cart
 const initialState = {
   cart: Cookies.get('cart')
     ? JSON.parse(Cookies.get('cart'))
@@ -25,8 +25,8 @@ function reducer(state, action) {
             item.name === existItem.name ? newItem : item
           )
         : [...state.cart.cartItems, newItem];
-        // update the cart item(for the refreshing of page)
-        Cookies.set('cart', JSON.stringify({ ...state.cart, cartItems}));
+      // update the cart item(for the refreshing of page)
+      Cookies.set('cart', JSON.stringify({ ...state.cart, cartItems }));
       return { ...state, cart: { ...state.cart, cartItems } };
     }
 
@@ -35,10 +35,21 @@ function reducer(state, action) {
       const cartItems = state.cart.cartItems.filter(
         (item) => item.slug !== action.payload.slug
       );
-      Cookies.set('cart', JSON.stringify({ ...state.cart, cartItems}))
+      Cookies.set('cart', JSON.stringify({ ...state.cart, cartItems }));
       // return previous state in the cart, keep previous cart and then pass the cartItems as a parameter
       return { ...state, cart: { ...state.cart, cartItems } };
     }
+
+    // cart reset
+    case 'CART_RESET':
+      return {
+        ...state,
+        cart: {
+          cartItems: [],
+          shippingAddress: { location: {} },
+          paymentMethod: '',
+        },
+      };
     default:
       return state;
   }
