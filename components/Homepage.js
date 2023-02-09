@@ -1,18 +1,21 @@
+import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Store } from '../utils/Store';
 
 export default function Homepage({ title, children }) {
+  const { status, data: session } = useSession();
   // we use this to be able to see how many items been added to cart in the ui
   const { state } = useContext(Store);
   const { cart } = state;
   const [cartItemsCount, setCartItemsCount] = useState(0);
   useEffect(() => {
-    setCartItemsCount(cart.cartItems.reduce(
-      (a, currentItem) => a + currentItem.quantity,
-      0
-    ))
+    setCartItemsCount(
+      cart.cartItems.reduce((a, currentItem) => a + currentItem.quantity, 0)
+    );
   }, [cart.cartItems]);
   return (
     <>
@@ -21,6 +24,9 @@ export default function Homepage({ title, children }) {
         <meta name="description" content="Ecommerce Website" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      <ToastContainer position="bottom-center" limit={1} />
+
       <div className="flex min-h-screen flex-col justify-between">
         {/* HEADER */}
         <header>
@@ -39,9 +45,16 @@ export default function Homepage({ title, children }) {
                   )}
                 </a>
               </Link>
-              <Link href="/login" legacyBehavior>
-                <a className="p-2">Login</a>
-              </Link>
+
+              {status === 'loading' ? (
+                'Loading'
+              ) : session?.user ? (
+                session.user.name
+              ) : (
+                <Link href="/login" legacyBehavior>
+                  <a className="p-2">Login</a>
+                </Link>
+              )}
             </div>
           </nav>
         </header>
