@@ -1,39 +1,39 @@
+import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
-import  { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import React, { useContext } from 'react';
+import { toast } from 'react-toastify';
 import Homepage from '../../components/Homepage';
-import data from '../../utils/data';
+import Product from '../../models/Product';
+import db from '../../utils/db';
 import { Store } from '../../utils/Store';
 
-export default function ProductScreen() {
+export default function ProductScreen(props) {
+  const { product } = props;
   // define the state and dispatch
   const { state, dispatch } = useContext(Store);
   // use it to redirect to another page
   const router = useRouter();
-  // we use this to get the product(name, slug e.t.c) from the url
-  const { query } = useRouter();
-  // then from the query we get slug where we can get the product
-  const { slug } = query;
-  const product = data.products.find((x) => x.slug === slug);
   if (!product) {
-    return <div>Product Not Found</div>;
+    return <Homepage title="Product Not Found">Product Not Found</Homepage>;
   }
 
   // we use the dispatch inside the add to carthandler
-  const addToCartHandler = () => {
+  const addToCartHandler = async () => {
     // if we have a certain product in the cart then increase the quantity
     const existItem = state.cart.cartItems.find((x) => x.slug === product.slug);
     const quantity = existItem ? existItem.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/products/${product._id}`);
     // This makes sure you don't add more than the amount of product in stock
-    if (product.countInStock < quantity) {
-      alert('Sorry, Product is out of stock');
-      return;
+    if (data.countInStock < quantity) {
+      return toast.error('Sorry, Product is out of stock');
     }
     // we use the dispatch inside the add to carthandler
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
     // redirect user to the cart page after clicking add to cart
     router.push('/cart');
+
   };
 
   return (
@@ -88,4 +88,18 @@ export default function ProductScreen() {
       </div>
     </Homepage>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { params } = context;
+  const { slug } = params;
+
+  await db.connect();
+  const product = await Product.findOne({ slug }).lean();
+  await db.disconnect();
+  return {
+    props: {
+      product: product ? db.convertDocToObj(product) : null,
+    },
+  };
 }
