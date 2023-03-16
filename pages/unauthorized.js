@@ -12,4 +12,4 @@ export default function unauthorized() {
       {message && <div className="mb-4 text-red-500">{message}</div>}
     </Homepage>
   );
-}
+} 
