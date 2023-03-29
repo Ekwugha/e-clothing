@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable react-hooks/rules-of-hooks */  
 import React, { useContext, useEffect, useState } from 'react';
 import Homepage from '../components/Homepage';
 import CheckoutWizard from '../components/CheckoutWizard';
